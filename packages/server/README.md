@@ -145,3 +145,110 @@ node server.mjs
 ```
 
 Open the URL it prints in a web browser. It will show [Apollo Sandbox](https://www.apollographql.com/docs/studio/explorer/sandbox/), a web-based tool for running GraphQL operations. Try running the operation `query { hello }`!
+
+
+## Getting Started: Set Up with MongoDB
+
+Follow these steps to set up Apollo Server with MongoDB and start building a GraphQL API that can interact with your MongoDB database:
+
+### Step 1: Install Dependencies
+
+Install the required dependencies by running the following command:
+
+```
+npm install apollo-server graphql mongoose
+```
+
+### Step 2: Set Up Apollo Server
+
+Create a new file called `server.js` and add the following code to set up the Apollo Server instance:
+
+```js
+const { ApolloServer } = require('apollo-server');
+const mongoose = require('mongoose');
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
+
+// Connect to MongoDB
+mongoose
+  .connect('mongodb://localhost/mydatabase', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('MongoDB Connected'))
+  .catch((err) => console.log(err));
+
+// Set up the Apollo Server instance
+const server = new ApolloServer({ typeDefs, resolvers });
+
+// Start the server
+server.listen().then(({ url }) => {
+  console.log(`Server ready at ${url}`);
+});
+```
+
+### Step 3: Define Your GraphQL Schema
+
+Define your GraphQL schema in a separate file called `schema.js`. Here is an example schema that defines a User type with a single query to retrieve all users:
+
+```graphql
+type User {
+  _id: ID!
+  name: String!
+  email: String!
+}
+
+type Query {
+  users: [User]
+}
+```
+
+### Step 4: Define Your Resolvers
+
+Define your resolvers in a separate file called `resolvers.js`. Here is an example resolver that retrieves all users from the MongoDB database:
+
+```js
+const User = require('./models/user');
+
+const resolvers = {
+  Query: {
+    async users() {
+      return await User.find();
+    },
+  },
+};
+
+module.exports = resolvers;
+```
+
+### Step 5: Define Your Mongoose Model
+
+Define your Mongoose model in a separate file called `user.js`. Here is an example model that defines a User with a name and email field:
+
+```js
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+});
+
+module.exports = mongoose.model('User', userSchema);
+```
+
+### Step 6: Run Your Server
+
+Run your server with the following command:
+
+```
+node server.js
+```
+
+This is a basic setup for Apollo Server with MongoDB using Mongoose. You can modify this code to fit your specific needs.
