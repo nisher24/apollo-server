@@ -252,3 +252,8 @@ node server.js
 ```
 
 This is a basic setup for Apollo Server with MongoDB using Mongoose. You can modify this code to fit your specific needs.
+
+
+## Contributing and Development
+
+To learn about how to contribute to the project, please see the [CONTRIBUTING.md](../../CONTRIBUTING.md) file and [DEVELOPMENT.md](../../DEVELOPMENT.md) file.
